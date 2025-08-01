@@ -4,13 +4,15 @@ import Enemy from "./Enemy.mjs";
 import Shield from "./Shield.mjs";
 import World from "./World.mjs"
 import shieldPos from "./shieldPos.mjs";
-
+import Levels from "./Levels.mjs";
+import LevelData from "./LevelData.mjs";
+import EnemyBullet from "./EnemyBullet.mjs";
 let currentZoom = 0.2;
 
 
 
-let cameraX = 0;
-let cameraY = 0;
+let cameraX = 400;
+let cameraY = 300;
 const cameraSmoothness = 0.1;
 
 
@@ -76,11 +78,32 @@ function createScaledImageCanvas(image, scale) {
     return tempCanvas;
 }
 
-const drawText = function (color, font, text, x, y, ctx) {
+const drawText = function (color, font, text, x, y, ctx, centered) {
     ctx.fillStyle = color;
     ctx.font = font;
-    ctx.fillText(text, x, y);
-}
+
+    if (centered) {
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+    } else {
+        ctx.textAlign = "start";
+        ctx.textBaseline = "alphabetic";
+    }
+
+    const lines = text.split("\n");
+    const lineHeight = parseInt(font, 10) || 16;
+
+    let startY = y;
+    if (centered) {
+        startY = y - (lines.length - 1) * lineHeight / 2;
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i], x, startY + i * lineHeight);
+    }
+};
+
+
 
 let frameCount = 0;
 let fps = 0;
@@ -94,9 +117,14 @@ export default function (game) {
         frameCount = 0;
         fps = 0;
         lastSecondTime = 0;
-        pageOutTime = 0;
+        pageOutTime = performance.now();
         pageOutDuration = 0;
         ctx = game.ctx;
+
+        let clickTime = performance.now();
+        let clickDuration = 250;
+        let clicking = false;
+
         canvas = game.canvas;
         const textureLoader = game.textureLoader;
         const soundManager = game.soundManager;
@@ -105,26 +133,21 @@ export default function (game) {
         top.game = game;
         const world = new World();
         top.world = world;
+        const wave = structuredClone(LevelData[game.wave]);
 
         const floorPattern = ctx.createPattern(createScaledImageCanvas(textureLoader.getImage("floor"), 8), 'repeat');
         const stonePattern = ctx.createPattern(createScaledImageCanvas(textureLoader.getImage("stone"), 8), 'repeat');
         const backgroundImage1Pattern = ctx.createPattern(createScaledImageCanvas(textureLoader.getImage("floor"), 100), 'repeat');
 
         let regenerateCooldownNow = 0;
-        let regenerateCooldown = 5000;
+        let regenerateCooldown = 2000;
 
         const core = new Core([0, 0], true, undefined, 1, "white");
         world.add(core);
 
 
-        for (let i = 0; i < 1; i++) {
-            const enemy = new Enemy();
-            world.add(enemy);
-        }
-
         let configureShield = function (s) {
             s.damage = upgrades.shieldDamage;
-
             return s;
         }
 
@@ -170,6 +193,8 @@ export default function (game) {
 
             ctx.restore();
             drawText("white", "14px Arial", "FPS: " + Math.round(fps), 10, 20, ctx);
+            drawText("white", "14px Arial", "MONEY: " + Math.round(game.money), 10, 39, ctx);
+            drawText("white", "24px Arial", wave.text, 400, 550, ctx, true);
         }
 
 
@@ -242,7 +267,16 @@ export default function (game) {
 
 
 
-        canvas.onclick = function () {
+        document.onmousedown = function () {
+            clicking = true;
+        };
+
+        document.onmouseup = function () {
+            clicking = false;
+        };
+
+
+        const throwBall = function () {
             if (selectedBalls == []) {
                 return;
             }
@@ -266,30 +300,50 @@ export default function (game) {
                 c.position[1] += ndy * force;
 
             }
-        };
-
-
-        const animate = function (currentTime) {
-            const deltaTime = currentTime - lastFrameTime;
-            lastFrameTime = currentTime;
+        }
+        const startTime = performance.now();
+        const sleep = function (seconds) {
+            return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+        }
+        let gamerunning = true;
+        const animate = async function () {
+            const now = performance.now();
+            const delta = performance.now() - nowTime;
+            lastFrameTime = now;
             frameCount++;
-            if (currentTime >= lastSecondTime + 1000) {
+            if (now >= lastSecondTime + 1000) {
                 fps = frameCount;
                 frameCount = 0;
-                lastSecondTime = currentTime;
+                lastSecondTime = now;
             }
-            accumulatedTime += performance.now() - nowTime;
+            accumulatedTime += delta;
             accumulatedTime -= pageOutDuration;
             pageOutDuration = 0;
-            while (accumulatedTime >= deltaTime) {
+            while (accumulatedTime > deltaTime) {
                 update();
                 accumulatedTime -= deltaTime;
             }
             nowTime = performance.now();
 
+            const anyLeft = Levels(wave, now - startTime);
+            let anyLeft2 = false;
+            for (let c of world.circles) {
+                if (c instanceof Enemy || c instanceof EnemyBullet) {
+                    anyLeft2 = true;
+                }
+            }
+            if (!anyLeft && !anyLeft2) {
+                game.wave++;
+                gamerunning = false;
+            }
+            if (clicking && performance.now() - clickTime > clickDuration) {
+                throwBall();
+                clickTime = performance.now();
+            }
+
             draw();
 
-            if (core.id != -1) {
+            if (core.id != -1 && gamerunning) {
 
                 requestAnimationFrame(animate);
             }

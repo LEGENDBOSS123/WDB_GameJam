@@ -26,21 +26,22 @@ await textureLoader.addImages({
 
 
 let upgrades = {
-    shieldBallCount: 1,
+    shieldBallCount: 100,
     throwCount: 1,
-    regenerateCount: 3,
+    regenerateCount: 1,
     shieldDamage: 1
 }
 
 let game = {
-    money: 4000,
+    money: 0,
     upgrades: upgrades,
     highscore: 0,
     textureLoader: textureLoader,
     soundManager: soundManager,
     canvas: canvas,
     ctx: ctx,
-    score: 0
+    score: 0,
+    wave: 1
 }
 
 

@@ -106,7 +106,6 @@ canvas {
     text-shadow: 0 0 8px #2575fc, 0 0 16px #2575fc;
 }
 
-/* General button styling */
 .menu-btn {
     display: block;
     width: 100%;
@@ -126,12 +125,10 @@ canvas {
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
 }
 
-/* Specific button colors */
 .menu-btn.start { background: linear-gradient(145deg, #28a745, #218838); }
 .menu-btn.upgrades { background: linear-gradient(145deg, #17a2b8, #138496); }
 .menu-btn.back { background: linear-gradient(145deg, #dc3545, #c82333); margin-top: 30px; }
 
-/* Upgrade buttons inside the list */
 .menu-btn.upgrade-action {
     background: linear-gradient(145deg, #007bff, #0069d9);
     padding: 8px 12px;
@@ -146,13 +143,14 @@ canvas {
     opacity: 0.6;
 }
 
-/* Text displays */
-#highscore-display, #money-display-main, #money-display-upgrades {
+#highscore-display, #money-display-main, #money-display-upgrades, #wave-display {
     font-size: 1.5em;
     margin: 10px 0;
 }
+#wave-display {
+    color: rgb(238, 185, 185);
+}
 
-/* Upgrade list styling */
 #upgrade-list {
     list-style: none;
     padding: 0;

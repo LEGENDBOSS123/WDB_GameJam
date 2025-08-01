@@ -10,7 +10,8 @@ export default class EnemyBullet extends Circle {
 
         this.isEnemyBullet = true;
         this.health = 1;
-        this.radius = 35;
+        this.radius = 20;
+        this.cashValue = 10;
 
     }
 
@@ -30,6 +31,7 @@ export default class EnemyBullet extends Circle {
 
         if (this.health < 0) {
             this.toBeRemoved = true;
+            top.game.money += this.cashValue;
             top.game.soundManager.play("explosion");
         }
 

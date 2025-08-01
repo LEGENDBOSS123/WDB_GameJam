@@ -430,6 +430,7 @@ const animate = function (currentTime) {
     accumulatedTime -= pageOutDuration;
     pageOutDuration = 0;
     while (accumulatedTime >= deltaTime) {
+        
         update();
         accumulatedTime -= deltaTime;
     }

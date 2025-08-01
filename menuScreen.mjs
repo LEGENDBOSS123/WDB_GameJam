@@ -3,9 +3,9 @@
 // Defines the properties of each upgrade
 const upgradeConfig = {
     shieldBallCount: { name: 'Shield Ball Count', increment: 25 },
-    throwCount:      { name: 'Extra Throw',     increment: 1 },
-    regenerateCount: { name: 'Regeneration',    increment: 1 },
-    shieldDamage:    { name: 'Shield Damage',   increment: 1 }
+    throwCount: { name: 'Extra Throw', increment: 1 },
+    regenerateCount: { name: 'Regeneration', increment: 1 },
+    shieldDamage: { name: 'Shield Damage', increment: 1 }
 };
 
 /**
@@ -17,13 +17,13 @@ const upgradeConfig = {
 function getUpgradeCost(key, currentValue) {
     switch (key) {
         case 'shieldBallCount':
-            return Math.floor(currentValue * 0.8);
+            return Math.floor(40 * Math.pow(2.5, currentValue/50 - 1));
         case 'throwCount':
-            return Math.floor(50 * Math.pow(2, currentValue - 1));
+            return Math.floor(50 * Math.pow(1.8, currentValue - 1));
         case 'regenerateCount':
-            return Math.floor(25 * Math.pow(1.8, currentValue - 3));
+            return Math.floor(10 * Math.pow(1.25, currentValue - 1));
         case 'shieldDamage':
-            return Math.floor(75 * Math.pow(2.2, currentValue - 1));
+            return Math.floor(500 * Math.pow(1.5, currentValue - 1));
         default:
             return Infinity;
     }
@@ -38,6 +38,7 @@ export default function menuScreen(game) {
         const upgradeScreen = document.getElementById('upgrade-screen');
 
         const highscoreDisplay = document.getElementById('highscore-display');
+        const waveDisplay = document.getElementById('wave-display');
         const moneyDisplayMain = document.getElementById('money-display-main');
         const moneyDisplayUpgrades = document.getElementById('money-display-upgrades');
         const upgradeList = document.getElementById('upgrade-list');
@@ -53,6 +54,7 @@ export default function menuScreen(game) {
             // Update shared info
             const moneyText = `Money: $${game.money}`;
             highscoreDisplay.textContent = `High Score: ${game.highscore}`;
+            waveDisplay.textContent = `Wave: ${game.wave}`;
             moneyDisplayMain.textContent = moneyText;
             moneyDisplayUpgrades.textContent = moneyText;
 
@@ -76,7 +78,7 @@ export default function menuScreen(game) {
                 upgradeList.appendChild(li);
             }
         }
-        
+
         // --- Event Handlers ---
         function handleUpgradeClick(event) {
             const key = event.target.dataset.key;
@@ -86,12 +88,10 @@ export default function menuScreen(game) {
             if (game.money >= cost) {
                 game.money -= cost;
                 game.upgrades[key] += upgradeConfig[key].increment;
-                // Optional: play an upgrade sound
-                // game.soundManager.playSound('explosion'); 
-                updateUI(); // Refresh the entire UI
+                updateUI();
             }
         }
-        
+
         function handleShowUpgrades() {
             mainMenu.classList.add('hidden');
             upgradeScreen.classList.remove('hidden');
@@ -105,7 +105,7 @@ export default function menuScreen(game) {
         function handleStartGame() {
             // 1. Cleanup: Hide UI and remove listeners to prevent memory leaks
             menuContainer.classList.add('hidden');
-            
+
             startGameBtn.removeEventListener('click', handleStartGame);
             showUpgradesBtn.removeEventListener('click', handleShowUpgrades);
             backToMainBtn.removeEventListener('click', handleBackToMain);

@@ -332,9 +332,12 @@ export default function (game) {
                     anyLeft2 = true;
                 }
             }
+            let win = false;
             if (!anyLeft && !anyLeft2) {
                 game.wave++;
                 gamerunning = false;
+                document.getElementById("thing").textContent = "YOU WIN THIS WAVE";
+                win = true;
             }
             if (clicking && performance.now() - clickTime > clickDuration) {
                 throwBall();
@@ -348,7 +351,9 @@ export default function (game) {
                 requestAnimationFrame(animate);
             }
             else {
-                top.game.soundManager.play("explosion");
+                if (!win) {
+                    document.getElementById("thing").textContent = "YOU LOST, TRY AGAIN";
+                }
                 resolve();
             }
         }

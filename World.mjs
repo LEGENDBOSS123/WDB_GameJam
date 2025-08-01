@@ -18,7 +18,6 @@ export default class World {
 
     addPair(circle1, circle2, _this) {
         if(circle1.toBeRemoved || circle2.toBeRemoved){
-            console.log("FR");
             return;
         }
         if (circle1.id > circle2.id) {
@@ -51,6 +50,7 @@ export default class World {
                 this.circles.splice(i, 1);
             }
         }
+        this.all[id].id = -1;
         this.all[id] = null;
         delete this.all[id];
     }
@@ -81,6 +81,11 @@ export default class World {
     }
 
     step(deltaTime) {
+        for (let c of this.circles){
+            if(c.toBeRemoved){
+                this.removeCircle(c.id);
+            }
+        }
         this.pairs.clear();
         this.hashmap.clear();
         for (let i = 0; i < this.circles.length; i++) {

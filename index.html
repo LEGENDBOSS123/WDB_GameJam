@@ -9,6 +9,24 @@
 </head>
 
 <body>
+    <div id="menu-container" class="hidden">
+        <div id="main-menu" class="menu-screen">
+            <h1 class="title">DEFEND THE CORE</h1>
+            <p id="highscore-display">High Score: 0</p>
+            <p id="money-display-main">Money: $0</p>
+            <button id="start-game-btn" class="menu-btn start">Start Game</button>
+            <button id="show-upgrades-btn" class="menu-btn upgrades">Upgrades</button>
+        </div>
+
+        <div id="upgrade-screen" class="menu-screen hidden">
+            <h1 class="title">Upgrades</h1>
+            <p id="money-display-upgrades">Money: $0</p>
+            <ul id="upgrade-list">
+                </ul>
+            <button id="back-to-main-btn" class="menu-btn back">⬅️ Back</button>
+        </div>
+    </div>
+
     <canvas id="gameCanvas" width="800" height="600"></canvas>
     <button class="fullscreen-button" id="fullscreenToggle" title="Toggle Fullscreen">
         <svg id="fullscreenIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onclick="

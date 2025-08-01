@@ -46,8 +46,7 @@ export default class Hashmap {
                     const circles = this.grid.get(key);
                     for(const c of circles){
                         if(c.toBeRemoved){
-                            console.log("FR");
-                            // circles.splice(circles.indexOf(c), 1);
+                            circles.splice(circles.indexOf(c), 1);
                             continue;
                         }
                         if(c !== circle){

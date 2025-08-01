@@ -2,7 +2,7 @@ import Box from "./Box.mjs";
 import Vector2 from "./Vector2.mjs"
 
 export default class Circle {
-    static radius = 10;
+    static radius = 20;
     constructor(position = [0, 0], isStatic = false, acceleration = [0, 0], mass = 1, color = "brown") {
         this.position = position;
         this.lastPosition = [...position]; // This is your previous position for Verlet
@@ -19,6 +19,11 @@ export default class Circle {
         this.friction = 1; // Default friction value
     }
 
+
+    destroy(){
+
+    }
+
     draw(world, options) {
         const ctx = options.ctx;
         ctx.beginPath();
@@ -32,7 +37,6 @@ export default class Circle {
 
     step(deltaTime) {
         if (this.isStatic) {
-            // If static, ensure its position doesn't drift, and previous position matches current
             this.lastPosition[0] = this.position[0];
             this.lastPosition[1] = this.position[1];
             return;
@@ -41,19 +45,12 @@ export default class Circle {
         const oldPositionX = this.position[0];
         const oldPositionY = this.position[1];
 
-        // Verlet integration: new_pos = 2 * current_pos - old_pos + acceleration * dt^2
         this.position[0] = 1.994 * this.position[0] - 0.994 * this.lastPosition[0] + this.acceleration[0] * deltaTime * deltaTime;
         this.position[1] = 1.994 * this.position[1] - 0.994 * this.lastPosition[1] + this.acceleration[1] * deltaTime * deltaTime;
 
-        // Update lastPosition for the next step
         this.lastPosition[0] = oldPositionX;
         this.lastPosition[1] = oldPositionY;
 
-        // Reset acceleration after it's used for the step
-        // If acceleration is always from external forces like gravity, you might apply it elsewhere.
-        // For simple demos, clearing it here is common if forces are re-calculated each frame.
-        // this.acceleration[0] = 0;
-        // this.acceleration[1] = 0;
     }
 
     doCollisionWith(circle) {
@@ -111,7 +108,7 @@ export default class Circle {
             massRatioCircle = 0;
         }
 
-        const relax = 0.8; // Factor to apply a fraction of the overlap correction (can help with stability)
+        const relax = 1; // Factor to apply a fraction of the overlap correction (can help with stability)
 
         // 1. Position Correction (resolving interpenetration)
         this.position[0] += normal[0] * overlap * massRatioThis * relax;
@@ -190,6 +187,7 @@ export default class Circle {
             circle.lastPosition[0] += tangent[0] * frictionImpulse * circle.invMass;
             circle.lastPosition[1] += tangent[1] * frictionImpulse * circle.invMass;
         }
+
 
         return true;
     }

@@ -1,19 +1,66 @@
-/* Basic reset and body styling */
 body {
     margin: 0;
-    background-color: #0d1117; /* A dark background */
+    background-color: #0d1117;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full viewport height */
-    overflow: hidden; /* Hide scrollbars */
+    height: 100%;
+    overflow: hidden;
     font-family: 'Arial', sans-serif;
 }
 
-/* Canvas styling */
 canvas {
-    background-color: #70c5ce; /* Classic sky blue */
+    background-color: #70c5ce;
     border: 5px solid #333;
     border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    display: block;
+    width: 800px;
+    height: 600px;
+    width: min(100vw, calc(100vh * (800 / 600)));
+    /* Scale to fill width, or scale to fill height based on aspect ratio */
+    height: min(100vh, calc(100vw * (600 / 800)));
+    object-fit: contain;
+    transform-origin: center center;
+    box-sizing: border-box;
+}
+
+
+
+.fullscreen-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+
+    padding: 10px;
+    font-size: 0;
+    color: #ffffff;
+    background: linear-gradient(145deg, #6a11cb 0%, #2575fc 100%);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.fullscreen-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.fullscreen-button:active {
+    transform: scale(1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.fullscreen-button svg {
+    fill: currentColor;
+    width: 24px;
+    height: 24px;
 }

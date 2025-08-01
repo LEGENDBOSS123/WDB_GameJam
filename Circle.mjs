@@ -42,8 +42,8 @@ export default class Circle {
         const oldPositionY = this.position[1];
 
         // Verlet integration: new_pos = 2 * current_pos - old_pos + acceleration * dt^2
-        this.position[0] = 2 * this.position[0] - this.lastPosition[0] + this.acceleration[0] * deltaTime * deltaTime;
-        this.position[1] = 2 * this.position[1] - this.lastPosition[1] + this.acceleration[1] * deltaTime * deltaTime;
+        this.position[0] = 1.994 * this.position[0] - 0.994 * this.lastPosition[0] + this.acceleration[0] * deltaTime * deltaTime;
+        this.position[1] = 1.994 * this.position[1] - 0.994 * this.lastPosition[1] + this.acceleration[1] * deltaTime * deltaTime;
 
         // Update lastPosition for the next step
         this.lastPosition[0] = oldPositionX;

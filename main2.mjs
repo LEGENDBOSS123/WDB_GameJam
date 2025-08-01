@@ -8,6 +8,7 @@ import TextureLoader from "./TextureLoader.mjs";
 import shieldPos from "./shieldPos.mjs";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
 const soundManager = new SoundManager();
 await soundManager.addSounds({
@@ -147,7 +148,7 @@ top.x = function () {
 const draw = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawBackground(0, backgroundImage1)
+    // drawBackground(0, backgroundImage1)
 
     const targetCameraX = canvas.width / 2 - core.position[0] * currentZoom;
     const targetCameraY = canvas.height / 2 - core.position[1] * currentZoom;
@@ -200,13 +201,18 @@ const update = function () {
             const dy = canvas.height / 2 - circle.position[1];
             const distanceSquared = dx * dx + dy * dy;
             const distance = Math.sqrt(distanceSquared);
-            const gConstant = 0.2;
-            const force = gConstant * circle.mass / distanceSquared;
+            if(distance < 0.0001){
+                continue;
+            }
+            const gConstant = 0.01;
+            const force = gConstant * circle.mass / Math.pow(distance, 1.3);
             const ax = dx * force;
             const ay = dy * force;
             circle.acceleration[0] = ax;
             circle.acceleration[1] = ay;
             circle.color = "orange";
+
+           
         }
     }
     selectedBalls = [];
@@ -234,7 +240,7 @@ canvas.addEventListener("click", function(){
     let d = Math.sqrt(dx * dx + dy * dy);
     let ndx = dx / d;
     let ndy = dy / d;
-    let force = 12;
+    let force = 30;
     for(let c of selectedBalls){
         
         c.position[0] += ndx * force;

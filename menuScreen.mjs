@@ -51,7 +51,7 @@ export default function menuScreen(game) {
          */
         function updateUI() {
             // Update shared info
-            const moneyText = `💰 Money: $${game.money}`;
+            const moneyText = `Money: $${game.money}`;
             highscoreDisplay.textContent = `High Score: ${game.highscore}`;
             moneyDisplayMain.textContent = moneyText;
             moneyDisplayUpgrades.textContent = moneyText;

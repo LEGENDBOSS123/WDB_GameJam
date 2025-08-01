@@ -26,7 +26,7 @@ await textureLoader.addImages({
 
 
 let upgrades = {
-    shieldBallCount: 100,
+    shieldBallCount: 1,
     throwCount: 1,
     regenerateCount: 3,
     shieldDamage: 1

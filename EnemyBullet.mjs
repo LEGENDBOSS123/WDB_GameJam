@@ -30,6 +30,7 @@ export default class EnemyBullet extends Circle {
 
         if (this.health < 0) {
             this.toBeRemoved = true;
+            top.game.soundManager.play("explosion");
         }
 
         const dx = - this.position[0];

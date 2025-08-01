@@ -14,6 +14,7 @@ export default class Shield extends Circle {
             if(circle.isEnemy || circle.isEnemyBullet){
                 circle.health -= this.damage;
                 this.toBeRemoved = true;
+                
             }
             if (this.isFlung || circle.isFlung) {
                 if (Vector2.magnitudeSquaredArray(this.position) < 150 * 150 || Vector2.magnitudeSquaredArray(circle.position) < 150 * 150) {

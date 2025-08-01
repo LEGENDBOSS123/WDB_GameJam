@@ -21,11 +21,7 @@ let canvas = 0;
 let tps = 60;
 let deltaTime = 1000 / tps;
 
-let frameCount = 0;
-let fps = 0;
-let lastSecondTime = 0;
-let pageOutTime = 0;
-let pageOutDuration = 0;
+
 let mouse = [0, 0];
 document.onmousemove = function (event) {
     mouse = screenToWorld(event.clientX, event.clientY);
@@ -86,11 +82,20 @@ const drawText = function (color, font, text, x, y, ctx) {
     ctx.fillText(text, x, y);
 }
 
-
+let frameCount = 0;
+let fps = 0;
+let lastSecondTime = 0;
+let pageOutTime = 0;
+let pageOutDuration = 0;
 
 
 export default function (game) {
     return new Promise(resolve => {
+        frameCount = 0;
+        fps = 0;
+        lastSecondTime = 0;
+        pageOutTime = 0;
+        pageOutDuration = 0;
         ctx = game.ctx;
         canvas = game.canvas;
         const textureLoader = game.textureLoader;
@@ -123,7 +128,7 @@ export default function (game) {
             return s;
         }
 
-        for (let i = 0; i < upgrades.shieldBallCount; i++) {
+        for (let i = 0; i < Math.min(upgrades.shieldBallCount, shieldPos.length); i++) {
             let c = new Shield([(shieldPos[i][0] - canvas.width * 0.5) * 3, (shieldPos[i][1] - canvas.height * 0.5) * 3], undefined, undefined, 1, "orange")
             configureShield(c);
             world.add(c);
@@ -209,8 +214,8 @@ export default function (game) {
                         continue;
                     }
                     let gConstant = 0.05;
-                    if(distance < 200){
-                        gConstant = 0;
+                    if (distance < 200) {
+                        gConstant = 0.01;
                     }
                     const force = gConstant * circle.mass / Math.pow(distance, 1.5);
                     const ax = dx * force;
@@ -285,9 +290,11 @@ export default function (game) {
             draw();
 
             if (core.id != -1) {
+
                 requestAnimationFrame(animate);
             }
             else {
+                top.game.soundManager.play("explosion");
                 resolve();
             }
         }
